@@ -46,7 +46,7 @@ def get_friends_by_expense(expense_id: int, session: Session = Depends(get_sessi
         raise HTTPException(status_code=404, detail=f"Expense '{expense_id}' not found")
 
 
-@router.get("/{expense_id}/friends/{friend_id}",
+@router.get("/{expense_id}/friends/{friend_id}", summary="Get Friend info by Expense",
          responses={200: {"model": Friend}, 404: {"model": Message}})
 def get_expenses(expense_id: int, friend_id: int, session: Session = Depends(get_session)) -> Friend:
     friend_by_expense = session.exec(select(FriendExpenseLink).where(FriendExpenseLink.expense_id == expense_id).where(FriendExpenseLink.friend_id == friend_id)).first()
@@ -61,7 +61,7 @@ def get_expenses(expense_id: int, friend_id: int, session: Session = Depends(get
     else:
         raise HTTPException(status_code=404, detail=f"Expense '{expense_id}' for friend '{friend_id}' not found")
     
-@router.put("/{expense_id}/friends/{friend_id}",
+@router.put("/{expense_id}/friends/{friend_id}", summary="Update Friend's credit in Expense",
          status_code=204,
          responses={404: {"model": Message}})
 def update_expense(expense_id: int, friend_id: int, amount: float, session: Session = Depends(get_session)):
@@ -74,7 +74,7 @@ def update_expense(expense_id: int, friend_id: int, amount: float, session: Sess
     else:
         raise HTTPException(status_code=404, detail=f"Expense '{expense_id}' for friend '{friend_id}' not found")
     
-@router.delete("/{expense_id}/friends/{friend_id}",
+@router.delete("/{expense_id}/friends/{friend_id}", summary="Delete Friend from Expense",
          status_code=204,
          responses={404: {"model": Message},
                     409: {"model": Message}})

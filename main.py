@@ -41,7 +41,8 @@ You will able to:
 * **➕ Create a friend**: requires only one attribute, the `name` 
 * **🔍 Retrieve friend info**: includes the internal `id`, the `name` as well as the total `credit balance` and `debit balance`.
 * **📋 Retrive the list of friends**: shows all friends with their `id`, `name`, total `credit balance` and total `debit balance`.
-* **✏️ Update a friend**: you can modify the `name` of a friend
+* **📋 Retrive a friend list of expenses**: shows all expenses splitted with the specified friend with their `id`, `description`, `amount`, `num friends` that share the expense, `credit balance` and `debit balance`.
+* **✏️ Update a friend**: you can modify the `name` of a friend.
 * **❌ Delete a friend**: only possible if their current credit balance is 0.
 
 ### 💵 Expenses

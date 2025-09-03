@@ -19,7 +19,7 @@ class FriendExpenseLink(SQLModel, table=True):
 class Friend(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str  
-    expense_links: list["FriendExpenseLink"] = Relationship(back_populates="friend")
+    expense_links: list["FriendExpenseLink"] = Relationship(back_populates="friend", cascade_delete=True)
     credit_balance: float = Field(default = 0)
     debit_balance: float = Field(default = 0)
 
@@ -30,5 +30,12 @@ class Expense(SQLModel, table=True):
     date: str
     amount: float
     credit_balance: Optional[float] = Field(default = 0)
-    friend_links: list["FriendExpenseLink"] = Relationship(back_populates="expense")
+    friend_links: list["FriendExpenseLink"] = Relationship(back_populates="expense", cascade_delete=True)
 
+class FriendExpense(BaseModel):
+    id: int
+    description: str
+    amount: float
+    num_friends: int
+    credit_balance: float
+    debit_balance: float

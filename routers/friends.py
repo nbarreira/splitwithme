@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from persistence.database import get_session
-from persistence.models import Message, Friend, FriendExpenseLink, Expense
+from persistence.models import Message, Friend, FriendExpenseLink, FriendExpense
 from sqlmodel import Session, select, func
 
 
@@ -52,6 +52,27 @@ def get_friend(friend_id: int, session: Session = Depends(get_session)) -> Frien
         friend.credit_balance = get_credit_balance(friend_id, session)
         friend.debit_balance = get_debit_balance(friend_id, session)
         return friend
+    else:
+        raise HTTPException(status_code=404, detail=f"Friend '{friend_id}' not found")
+
+
+@router.get("/{friend_id}/expenses", summary="Get Expenses by Friend",
+         responses={200: {"model": FriendExpense}, 404: {"model": Message}})
+def get_friend(friend_id: int, session: Session = Depends(get_session)) -> list[FriendExpense]:
+    friend = session.exec(select(Friend).where(Friend.id == friend_id)).first()
+    if friend is not None:
+        friend_expenses = []
+        for friend_expense_link in friend.expense_links:
+            expense = friend_expense_link.expense
+            num_friends = len(expense.friend_links)
+            friend_expenses.append(FriendExpense(id=expense.id, 
+                                                 description=expense.description,
+                                                 amount=expense.amount,
+                                                 num_friends=num_friends + 1,
+                                                 credit_balance=friend_expense_link.amount,
+                                                 debit_balance=expense.amount/(num_friends+1)))
+        
+        return friend_expenses
     else:
         raise HTTPException(status_code=404, detail=f"Friend '{friend_id}' not found")
 
