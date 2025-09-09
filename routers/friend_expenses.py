@@ -12,8 +12,16 @@ router = APIRouter(
 
 @router.post("/{expense_id}/friends",
           status_code=201,
-          responses={201: {"model": Expense}, 409: {"model": Message}})
+          responses={201: {"model": Expense},
+                     404: {"model": Message}, 
+                     409: {"model": Message}})
 def add_friend_to_expense(expense_id: int, friend_id: int, session: Session = Depends(get_session)) -> FriendExpenseLink:
+    existing_friend = session.exec(select(Friend).where(Friend.id==friend_id)).first()
+    if existing_friend is None:
+        raise  HTTPException(status_code=404, detail=f"Friend '{friend_id}' not found")
+    existing_expense = session.exec(select(Expense).where(Expense.id==expense_id)).first()
+    if existing_expense is None:
+         raise HTTPException(status_code=404, detail=f"Expense '{expense_id}' not found")
     existing_friend_expense = session.exec(select(FriendExpenseLink).where(FriendExpenseLink.expense_id == expense_id).where(FriendExpenseLink.friend_id == friend_id))
     if existing_friend_expense.first() is None:
         friend_expense_link = FriendExpenseLink(expense_id=expense_id, friend_id=friend_id)
