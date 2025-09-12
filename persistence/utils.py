@@ -26,7 +26,7 @@ def init_db():
             session.commit()
             session.refresh(expenses[-1])
 
-        for _ in range(3):
+        for _ in range(10):
             expense_links = []
             used = []
             for _ in range(random.randint(0,4)):

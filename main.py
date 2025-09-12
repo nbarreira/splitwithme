@@ -49,7 +49,7 @@ You will able to:
 You will able to:
 * **➕ Create an expense**: requires `description`, `date` (format: YYYY-MM-DD) and `amount`
 * **🔍 Retrieve expense info**: includes the internal `id`, the `description`, `date`, `amount` and the total `credit balance`.
-* **📋 Retrive the list of expenses**: shows all expenses with their `id`, `description`, `date`, `amount` and  total `credit balance`.
+* **📋 Retrive the list of expenses**: shows all expenses with their `id`, `description`, `date`, `amount`, `num friends` that split the expense and  total `credit balance`.
 * **✏️ Update an expense**: you can change the `description`, `date` or `amount`.
 * **❌ Delete an expense**
 

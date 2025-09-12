@@ -40,6 +40,14 @@ def get_credit_balance(expense_id: int, session: Session) -> float:
         credit_balance = 0
     return credit_balance
 
+def get_num_friends(expense_id: int, session: Session) -> float:
+    # Get all the friends
+    num_friends = session.exec(select(func.count(FriendExpenseLink.friend_id)).where(FriendExpenseLink.expense_id == expense_id)).first()
+    if num_friends is None:
+        num_friends = 1
+    return num_friends + 1
+
+
 
 @router.get("/{expense_id}",
          responses={200: {"model": Expense}, 404: {"model": Message}})
@@ -59,6 +67,7 @@ def get_expenses(session: Session = Depends(get_session)) -> list[Expense]:
     expenses = session.exec(select(Expense)).all()
     for expense in expenses:
         expense.credit_balance = get_credit_balance(expense.id, session)
+        expense.num_friends = get_num_friends(expense.id, session)
     return expenses
 
 @router.put("/{expense_id}",
