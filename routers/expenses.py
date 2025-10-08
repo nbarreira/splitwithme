@@ -3,6 +3,7 @@ from persistence.database import get_session
 from persistence.models import Message, Friend, Expense, FriendExpenseLink, Expense
 from sqlmodel import Session, select, func
 
+import time
 from datetime import datetime
 
 router = APIRouter(
@@ -52,10 +53,12 @@ def get_num_friends(expense_id: int, session: Session) -> float:
 @router.get("/{expense_id}",
          responses={200: {"model": Expense}, 404: {"model": Message}})
 def get_expense(expense_id: int, session: Session = Depends(get_session)) -> Expense: 
+    time.sleep(2)
     results = session.exec(select(Expense).where(Expense.id == expense_id))
     expense = results.first()
     if expense is not None:
         expense.credit_balance = get_credit_balance(expense_id, session)
+        expense.num_friends = get_num_friends(expense_id, session)
         return expense
     else:
         raise HTTPException(status_code=404, detail=f"Expense '{expense_id}' not found")
@@ -64,6 +67,7 @@ def get_expense(expense_id: int, session: Session = Depends(get_session)) -> Exp
 @router.get("/",
          responses={200: {"model": list[Expense]}, 404: {"model": Message}})
 def get_expenses(session: Session = Depends(get_session)) -> list[Expense]:
+    time.sleep(2)
     expenses = session.exec(select(Expense)).all()
     for expense in expenses:
         expense.credit_balance = get_credit_balance(expense.id, session)
